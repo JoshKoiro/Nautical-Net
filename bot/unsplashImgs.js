@@ -12,28 +12,34 @@ export async function searchUnsplash(query,num,page) {
         perPage: num,
         page: page
     })
-    // save results as a json file
-    const json = JSON.stringify(results.response.results)
-    fs.writeFileSync('output.json', json)
-    return results
+
+    // TEST without using the API
+    saveFile(results)
+
+    return formatData(results);
     
 }
 
 function formatData(data) {
     // import data from output.json as a javascript object
     let dataResults = [];
-    const jsonData = JSON.parse(fs.readFileSync(data, 'utf8'));
-    jsonData.map((photo) => {
-        let data = {
+    // const jsonData = JSON.parse(fs.readFileSync(data, 'utf8'));
+    data.response.results.map((photo) => {
+        dataResults.push({
             src: photo.urls.regular,
             photographer: photo.user.name,
             photographer_url: photo.user.links.html,
             url: photo.urls.regular,
             alt: photo.alt_description
-    }
-        dataResults.push(data);
+        })
     })
     return dataResults
 }
 
-console.log(formatData('output.json'));
+// TEST without using the API
+function saveFile(results){
+    const json = JSON.stringify(results.response.results)
+    fs.writeFileSync('output.json', json)
+}
+
+// console.log(formatData('output.json'));
