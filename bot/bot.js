@@ -49,12 +49,29 @@ client.on('interactionCreate', async interaction => {
   const { commandName } = interaction;
 
   if (commandName === 'search-pexels') {
-      const query = getQuery(interaction.options.getString('query'));
-      console.log(getFlags(query))
-      console.log(getQuery(query))
+      const discordQuery = interaction.options.getString('query');
+      const query = getQuery(discordQuery);
+      const flags = getFlags(discordQuery);
+
+      // check if the flags array contains a numerical value
+      let numResults;
+
+      if (flags.length > 0) {
+        // check if the flags array contains a numerical value
+        flags.map((flag) => {
+          if (flag.match(/\d+/)) {
+            numResults = flag;
+            if (numResults > 10) {
+              numResults = 10;
+            }
+          } else {
+            numResults = 4;
+          }
+        })
+      }
       
       try {
-        let numResults = 8;
+        // let numResults = 8;
         let randomNumber = Math.floor(Math.random() * 50) + 1;
         const results = await searchPexels(query,numResults,randomNumber);
 
