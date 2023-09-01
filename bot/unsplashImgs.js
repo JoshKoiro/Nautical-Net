@@ -6,6 +6,14 @@ const unsplash = createApi({
     accessKey: process.env.UNSPLASH_ACCESS_KEY
 })
 
+/**
+ * Searches Unsplash for photos based on the provided query.
+ *
+ * @param {string} query - The search query.
+ * @param {number} num - The number of photos to retrieve per page.
+ * @param {number} page - The page number of the search results.
+ * @return {Promise} A promise that resolves to the formatted data of the search results.
+ */
 export async function searchUnsplash(query,num,page) {
     const results = await unsplash.search.getPhotos({
         query: query,
@@ -20,10 +28,14 @@ export async function searchUnsplash(query,num,page) {
     
 }
 
+/**
+ * Formats the given data into a specific structure.
+ *
+ * @param {object} data - The data to be formatted.
+ * @return {array} An array of formatted data.
+ */
 function formatData(data) {
-    // import data from output.json as a javascript object
     let dataResults = [];
-    // const jsonData = JSON.parse(fs.readFileSync(data, 'utf8'));
     data.response.results.map((photo) => {
         dataResults.push({
             src: photo.urls.regular,
@@ -35,11 +47,3 @@ function formatData(data) {
     })
     return dataResults
 }
-
-// TEST without using the API
-function saveFile(results){
-    const json = JSON.stringify(results.response.results)
-    fs.writeFileSync('output.json', json)
-}
-
-// console.log(formatData('output.json'));
