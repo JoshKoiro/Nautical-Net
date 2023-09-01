@@ -1,4 +1,4 @@
-import { Client, AttachmentBuilder, EmbedBuilder, GatewayIntentBits } from 'discord.js';
+import { Client, EmbedBuilder, GatewayIntentBits } from 'discord.js';
 import 'dotenv/config'
 import fetch from 'node-fetch';
 import { searchPexels } from './pexelsImgs.js'
@@ -24,7 +24,7 @@ client.once('ready', async (c) => {
     // more slash commands to be added here
 
   );
-  console.log('Slash command registered!');
+  console.log('Search command created');
 });
 
 client.on('interactionCreate', async interaction => {
@@ -35,27 +35,29 @@ client.on('interactionCreate', async interaction => {
   if (commandName === 'search') {
       const query = interaction.options.getString('query');
       
-      // Here you can perform the search functionality using the 'query'.
-      // For now, we're just sending a placeholder message.
-      
-      // await interaction.reply(`You searched for: ${query}`);
-      const results = await searchPexels(query).then((res) => {
-          return res;
-      });
+      try {
+        let numResults = 8;
+        let randomNumber = Math.floor(Math.random() * 1000) + 1;
+        const results = await searchPexels(query,numResults,randomNumber);
 
-      let embeds = [];
+        let embeds = [];
 
-      for (let i = 0; i < results.length; i++) {
-          let embed = new EmbedBuilder()
-                .setTitle(results[i].alt)
-                // .setColor(0xffa500) // You can set it to any color you want
-                .setDescription(results[i].photographer)
-                .setImage(results[i].src)
-          
-          embeds.push(embed);
-      }
+        // Limiting results to 10 to avoid hitting Discord's embed limit.
+        for (let i = 0; i < Math.min(results.length, 10); i++) {
+            let embed = new EmbedBuilder()
+                  .setTitle(results[i].alt)
+                  .setDescription(results[i].photographer)
+                  .setThumbnail(results[i].src);
+            
+            embeds.push(embed);
+        }
 
-            await interaction.reply({ embeds: embeds });
+        await interaction.reply({ embeds: embeds });
+
+    } catch (error) {
+        console.error("Error searching Pexels:", error);
+        await interaction.reply({ content: "Sorry, there was an error processing your search. Please try again later.", ephemeral: true });
+    }
   }
 
 });

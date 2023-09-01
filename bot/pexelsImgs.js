@@ -2,8 +2,9 @@ import { createClient } from 'pexels';
 import 'dotenv/config'
 const client = createClient(process.env.PEXELS_API_KEY);
 
- export async function searchPexels(query) {
-    const results = await client.photos.search({ query, per_page: 4 });
+ export async function searchPexels(query,num,page) {
+    const results = await client.photos.search({ query, per_page: num, page: page });
+    console.log(results);
      return output(results);
 }
 
