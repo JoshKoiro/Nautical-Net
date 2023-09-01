@@ -2,6 +2,7 @@ import { Client, EmbedBuilder, GatewayIntentBits } from 'discord.js';
 import 'dotenv/config'
 import fetch from 'node-fetch';
 import { searchPexels } from './pexelsImgs.js'
+// import { clipboard } from 'electron';
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages], // Updated intents to handle slash commands and messages
 });
@@ -37,7 +38,7 @@ client.on('interactionCreate', async interaction => {
       
       try {
         let numResults = 8;
-        let randomNumber = Math.floor(Math.random() * 1000) + 1;
+        let randomNumber = Math.floor(Math.random() * 50) + 1;
         const results = await searchPexels(query,numResults,randomNumber);
 
         let embeds = [];
@@ -47,8 +48,10 @@ client.on('interactionCreate', async interaction => {
             let embed = new EmbedBuilder()
                   .setTitle(results[i].alt)
                   .setDescription(results[i].photographer)
-                  .setThumbnail(results[i].src);
-            
+                  .setImage(results[i].src)
+                  .setURL(results[i].src)
+                  // Should add a button here to copy the image link
+
             embeds.push(embed);
         }
 
