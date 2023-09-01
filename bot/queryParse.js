@@ -15,5 +15,33 @@ export const getFlags = (userQuery) => {
         }
     }
 
-    return flags;
+    return {
+        flags: flags,
+        imgQty: getImgQty(flags)
+    }
+}
+
+const checkFlags = (flags) => {
+    return flags.length > 0
+}
+
+const getImgQty = (flags) => {
+    let numResults;
+    if(!checkFlags(flags)) {
+        return 4
+    }
+    flags.map((flag) => {
+        if (flag.match(/\d+/)) {
+          numResults = flag;
+          if (numResults > 10) {
+            numResults = 10;
+          }
+
+        } else {
+
+        // defaults to 4 images returned if no numerical flags are provided
+          numResults = 4;
+        }
+      })
+      return numResults
 }
