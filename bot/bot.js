@@ -80,7 +80,9 @@ client.on('interactionCreate', async interaction => {
   }
 
   if (commandName === 'search-unsplash') {
-    const query = interaction.options.getString('query');
+    const discordQuery = interaction.options.getString('query');
+    const query = getQuery(discordQuery);
+    const flags = getFlags(discordQuery);
     
     try {
       let numResults = 8;
