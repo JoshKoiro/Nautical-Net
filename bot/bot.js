@@ -3,6 +3,7 @@ import 'dotenv/config'
 import fetch from 'node-fetch';
 import { searchPexels } from './pexelsImgs.js'
 import { searchUnsplash } from './unsplashImgs.js'
+import { getFlags, getQuery } from './queryParse.js'
 // import { clipboard } from 'electron';
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages], // Updated intents to handle slash commands and messages
@@ -48,12 +49,13 @@ client.on('interactionCreate', async interaction => {
   const { commandName } = interaction;
 
   if (commandName === 'search-pexels') {
-      const query = interaction.options.getString('query');
+      const discordQuery = interaction.options.getString('query');
+      const query = getQuery(discordQuery);
+      const flags = getFlags(discordQuery);
       
       try {
-        let numResults = 8;
         let randomNumber = Math.floor(Math.random() * 50) + 1;
-        const results = await searchPexels(query,numResults,randomNumber);
+        const results = await searchPexels(query,flags.imgQty,randomNumber);
 
         let embeds = [];
 
@@ -78,7 +80,9 @@ client.on('interactionCreate', async interaction => {
   }
 
   if (commandName === 'search-unsplash') {
-    const query = interaction.options.getString('query');
+    const discordQuery = interaction.options.getString('query');
+    const query = getQuery(discordQuery);
+    const flags = getFlags(discordQuery);
     
     try {
       let numResults = 8;
