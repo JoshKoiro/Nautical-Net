@@ -1,10 +1,8 @@
 import { Client, EmbedBuilder, GatewayIntentBits } from 'discord.js';
 import 'dotenv/config'
-import fetch from 'node-fetch';
 import { searchPexels } from './pexelsImgs.js'
 import { searchUnsplash } from './unsplashImgs.js'
 import { getFlags, getQuery } from './queryParse.js'
-// import { clipboard } from 'electron';
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages], // Updated intents to handle slash commands and messages
 });
@@ -85,9 +83,8 @@ client.on('interactionCreate', async interaction => {
     const flags = getFlags(discordQuery);
     
     try {
-      let numResults = 8;
       let randomNumber = Math.floor(Math.random() * 50) + 1;
-      const results = await searchUnsplash(query,numResults,randomNumber);
+      const results = await searchUnsplash(query,flags.imgQty,randomNumber);
 
       let embeds = [];
 
